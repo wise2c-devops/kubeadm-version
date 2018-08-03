@@ -1,0 +1,11 @@
+sudo: required
+
+services:
+- docker
+
+script:
+- >
+- docker build -t wise2c/kubeadm-version:$TRAVIS_BRANCH .
+- docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+- docker push wise2c/kubeadm-version:$TRAVIS_BRANCH
+- docker run --rm --name=kubeadm-version wise2c/kubeadm-version:$TRAVIS_BRANCH kubeadm config images list --kubernetes-version 1.11.1
