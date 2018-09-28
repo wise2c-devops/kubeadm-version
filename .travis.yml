@@ -8,4 +8,6 @@ script:
 - docker build -t wise2c/kubeadm-version:$TRAVIS_BRANCH .
 - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
 - docker push wise2c/kubeadm-version:$TRAVIS_BRANCH
-- docker run --rm --name=kubeadm-version wise2c/kubeadm-version:$TRAVIS_BRANCH kubeadm config images list --kubernetes-version 1.11.1
+- docker run --rm --name=kubeadm-version wise2c/kubeadm-version:$TRAVIS_BRANCH kubeadm config images list
+- docker run --rm --name=kubeadm-config-migration wise2c/kubeadm-version:$TRAVIS_BRANCH kubeadm config migrate --old-config ./kubeadm.conf.old --new-config ./kubeadm-config-new.yaml
+- cat ./kubeadm-config-new.yaml
