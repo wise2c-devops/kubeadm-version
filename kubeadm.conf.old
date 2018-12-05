@@ -3,7 +3,7 @@ api:
   bindPort: 6443
   controlPlaneEndpoint: ""
 apiServerCertSANs:
-- 192.168.9.30:6444
+- 192.168.9.30
 apiServerExtraArgs:
   apiserver-count: "3"
   feature-gates: LocalStorageCapacityIsolation=true
@@ -33,8 +33,9 @@ etcd:
     - http://192.168.9.11:2379
     - http://192.168.9.12:2379
     - http://192.168.9.13:2379
+    
     keyFile: ""
-imageRepository: 192.168.9.20/library 
+imageRepository: 192.168.9.20/library
 kind: MasterConfiguration
 kubeProxy:
   config:
@@ -142,7 +143,7 @@ kubeletConfiguration:
     streamingConnectionIdleTimeout: 4h0m0s
     syncFrequency: 1m0s
     volumeStatsAggPeriod: 1m0s
-kubernetesVersion: {{ kubernetes_version }}
+kubernetesVersion: v1.13.0
 networking:
   dnsDomain: cluster.local
   podSubnet: 10.244.0.0/16
