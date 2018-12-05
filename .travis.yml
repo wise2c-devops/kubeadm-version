@@ -5,7 +5,8 @@ services:
 
 script:
 - >
+- curl -o -L kubeadm.conf.old https://raw.githubusercontent.com/wise2c-devops/kubeadm-version/version-convert/kubeadm.conf.old
 - docker build -t wise2c/kubeadm-version:$TRAVIS_BRANCH .
 - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
 - docker push wise2c/kubeadm-version:$TRAVIS_BRANCH
-- docker run --rm --name=kubeadm-version wise2c/kubeadm-version:$TRAVIS_BRANCH kubeadm config images list
+- docker run --rm --name=kubeadm-version wise2c/kubeadm-version:$TRAVIS_BRANCH /root/convert.sh
