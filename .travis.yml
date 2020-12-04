@@ -1,11 +1,20 @@
 sudo: required
 
+arch:
+  - amd64
+  - arm64
+
 services:
 - docker
 
 script:
 - >
-- docker build -t wise2c/kubeadm-version:$TRAVIS_BRANCH .
+- if [ "${TRAVIS_CPU_ARCH}" == "arm64" ]; then
+  arch="-$TRAVIS_CPU_ARCH";
+  else
+  arch="";
+  fi
+- docker build -t wise2c/kubeadm-version:$TRAVIS_BRANCH$arch .
 - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-- docker push wise2c/kubeadm-version:$TRAVIS_BRANCH
-- docker run --rm --name=kubeadm-version wise2c/kubeadm-version:$TRAVIS_BRANCH kubeadm config images list
+- docker push wise2c/kubeadm-version:$TRAVIS_BRANCH$arch
+- docker run --rm --name=kubeadm-version wise2c/kubeadm-version:$TRAVIS_BRANCH$arch kubeadm config images list
