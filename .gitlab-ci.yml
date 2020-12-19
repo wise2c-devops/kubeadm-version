@@ -1,0 +1,10 @@
+build_image:
+    image: docker:git
+    services:
+        - docker:dind
+    script:
+        - docker build -t wise2c/kubeadm-version:$CI_COMMIT_REF_NAME .
+        - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+        - docker push wise2c/kubeadm-version:$CI_COMMIT_REF_NAME
+        - docker run --rm --name=kubeadm-version wise2c/kubeadm-version:$CI_COMMIT_REF_NAME kubeadm config images list
+    when: always
