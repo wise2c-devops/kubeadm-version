@@ -2,9 +2,11 @@ build_image:
     image: docker:git
     services:
         - docker:dind
+    before_script:
+        - docker run --privileged linuxkit/binfmt:v0.8
+        - docker run -d --privileged -p 1234:1234 --name buildkit moby/buildkit:latest --addr tcp://0.0.0.0:1234 --oci-worker-platform linux/amd64 --oci-worker-platform linux/arm64
+        - docker cp buildkit:/usr/bin/buildctl /usr/bin/
+        - export BUILDKIT_HOST=tcp://0.0.0.0:1234
     script:
-        - docker build -t wise2c/kubeadm-version:$CI_COMMIT_REF_NAME .
-        - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-        - docker push wise2c/kubeadm-version:$CI_COMMIT_REF_NAME
-        - docker run --rm --name=kubeadm-version wise2c/kubeadm-version:$CI_COMMIT_REF_NAME kubeadm config images list
+        - bash build-images.sh
     when: always
