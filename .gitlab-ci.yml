@@ -1,12 +1,8 @@
-build_image:
-    image: docker:git
-    services:
-        - docker:dind
-    before_script:
-        - docker run --privileged linuxkit/binfmt:v0.8
-        - docker run -d --privileged -p 1234:1234 --name buildkit moby/buildkit --addr tcp://0.0.0.0:1234 --oci-worker-platform linux/amd64 --oci-worker-platform linux/arm64
-        - docker cp buildkit:/usr/bin/buildctl /usr/bin/
-        - export BUILDKIT_HOST=tcp://0.0.0.0:1234
-    script:
-        - sh build-images.sh
-    when: always
+include:
+  - project: 'alanpeng/kubeadm-version'
+    file: '/gitlab-ci-template.yml'
+
+variables:
+# remove comment (or set variable in Settings) to build with BUILDX
+# CI_BUILDX_ARCHS: "linux/arm/v7"
+  CI_BUILD_ARM64: "enabled"
