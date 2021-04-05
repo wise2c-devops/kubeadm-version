@@ -19,4 +19,6 @@ buildkitd:
     entrypoint: [ "sh", "-c" ]
   script:
       - sh build-images.sh
+  tags:
+  - docker
   when: always
