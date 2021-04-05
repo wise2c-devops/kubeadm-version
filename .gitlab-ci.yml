@@ -8,5 +8,5 @@ build_image:
         - docker cp buildkit:/usr/bin/buildctl /usr/bin/
         - export BUILDKIT_HOST=tcp://0.0.0.0:1234
     script:
-        - bash build-images.sh
+        - build-images.sh
     when: always
