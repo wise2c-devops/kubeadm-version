@@ -1,3 +1,3 @@
-FROM centos:8
+FROM almalinux/almalinux:8
 COPY kubernetes.repo /etc/yum.repos.d
-RUN yum -y install kubeadm-1.19.9
+RUN yum -y install kubeadm-1.19.10
