@@ -1,3 +1,3 @@
 FROM centos:7
 COPY kubernetes.repo /etc/yum.repos.d
-RUN yum -y install kubeadm-1.21.10
+RUN yum -y install kubeadm-1.21.11
