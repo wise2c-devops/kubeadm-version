@@ -7,10 +7,10 @@ jobs:
       - run:
           name: Build a container image
           command: |
-            docker build -t wise2c/kubeadm-version:$CIRCLE_BRANCH .
+            docker build -t wise2c/kubeadm-version:$CIRCLE_TAG .
             docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-            docker push wise2c/kubeadm-version:$CIRCLE_BRANCH
-            docker run --rm --name=kubeadm-version wise2c/kubeadm-version:$CIRCLE_BRANCH kubeadm config images list
+            docker push wise2c/kubeadm-version:$CIRCLE_TAG
+            docker run --rm --name=kubeadm-version wise2c/kubeadm-version:$CIRCLE_TAG kubeadm config images list
 
 workflows:
   version: 2
