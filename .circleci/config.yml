@@ -3,7 +3,7 @@ jobs:
     machine: true
     filters:
       tags:
-        only: /^v.*/
+        only: /.*/
 
     steps:
       - checkout
