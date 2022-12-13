@@ -1,9 +1,6 @@
 jobs:
   build:
     machine: true
-    filters:
-      tags:
-        only: /.*/
 
     steps:
       - checkout
@@ -14,3 +11,12 @@ jobs:
             docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
             docker push wise2c/kubeadm-version:$CIRCLE_BRANCH
             docker run --rm --name=kubeadm-version wise2c/kubeadm-version:$CIRCLE_BRANCH kubeadm config images list
+
+  deploy:
+    requires:
+      - build
+    filters:
+      tags:
+      only: /.*/
+    branches:
+      ignore: /.*/
