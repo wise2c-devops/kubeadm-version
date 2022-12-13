@@ -18,5 +18,3 @@ jobs:
     filters:
       tags:
       only: /.*/
-    branches:
-      ignore: /.*/
