@@ -1,0 +1,11 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: docker:git
+      - image: docker:dind
+    steps:
+      - run: docker build -t wise2c/kubeadm-version:v1.26.0 .
+      - run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+      - run: docker push wise2c/kubeadm-version:v1.26.0
+      - run: docker run --rm --name=kubeadm-version wise2c/kubeadm-version:v1.26.0 kubeadm config images list
