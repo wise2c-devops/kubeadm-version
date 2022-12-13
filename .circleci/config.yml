@@ -14,9 +14,6 @@ jobs:
 
 workflows:
   version: 2
-  untagged-build:
-    jobs:
-      - build
   tagged-build:
     jobs:
       - build:
