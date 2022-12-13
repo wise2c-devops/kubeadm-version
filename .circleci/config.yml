@@ -12,9 +12,14 @@ jobs:
             docker push wise2c/kubeadm-version:$CIRCLE_BRANCH
             docker run --rm --name=kubeadm-version wise2c/kubeadm-version:$CIRCLE_BRANCH kubeadm config images list
 
-  deploy:
-    requires:
+workflows:
+  version: 2
+  untagged-build:
+    jobs:
       - build
-    filters:
-      tags:
-      only: /.*/
+  tagged-build:
+    jobs:
+      - build:
+          filters:
+            tags:
+              only: /^v.*/
