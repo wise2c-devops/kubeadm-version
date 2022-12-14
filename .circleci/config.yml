@@ -81,7 +81,7 @@ workflows:
     jobs:
       - build-branches-amd64
       - build-branches-aarch64
-      - build-branches-multi-arch
+      - build-branches-multi-arch:
           requires:
             - build-branches-amd64
             - build-branches-aarch64
