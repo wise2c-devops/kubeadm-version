@@ -1,0 +1,39 @@
+jobs:
+  build-branches:
+    machine: true
+    steps:
+      - checkout
+      - run:
+          name: Build a container image
+          command: |
+            docker build -t wise2c/kubeadm-version:$CIRCLE_BRANCH .
+            docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+            docker push wise2c/kubeadm-version:$CIRCLE_BRANCH
+            docker run --rm --name=kubeadm-version wise2c/kubeadm-version:$CIRCLE_BRANCH kubeadm config images list
+
+  build-tags:
+    machine: true
+    steps:
+      - checkout
+      - run:
+          name: Build a container image
+          command: |
+            docker build -t wise2c/kubeadm-version:$CIRCLE_TAG .
+            docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+            docker push wise2c/kubeadm-version:$CIRCLE_TAG
+            docker run --rm --name=kubeadm-version wise2c/kubeadm-version:$CIRCLE_TAG kubeadm config images list
+
+workflows:
+  version: 2
+  build-for-branches:
+    jobs:
+      - build-branches
+  build-for-tags:
+    jobs:
+      - build-tags:
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/
+
