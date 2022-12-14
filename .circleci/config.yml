@@ -1,0 +1,71 @@
+jobs:
+  build-branches-x86:
+    machine: true
+    steps:
+      - checkout
+      - run:
+          name: Build a container image
+          command: |
+            docker build -f Dockerfile.amd64 -t wise2c/kubeadm-version:$CIRCLE_BRANCH .
+            docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+            docker push wise2c/kubeadm-version:$CIRCLE_BRANCH
+            docker run --rm --name=kubeadm-version wise2c/kubeadm-version:$CIRCLE_BRANCH kubeadm config images list
+
+  build-tags-x86:
+    machine: true
+    steps:
+      - checkout
+      - run:
+          name: Build a container image
+          command: |
+            docker build -f Dockerfile.amd64 -t wise2c/kubeadm-version:$CIRCLE_TAG .
+            docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+            docker push wise2c/kubeadm-version:$CIRCLE_TAG
+            docker run --rm --name=kubeadm-version wise2c/kubeadm-version:$CIRCLE_TAG kubeadm config images list
+
+  build-branches-arm:
+    machine: true
+    resource_class: arm.medium
+    steps:
+      - checkout
+      - run:
+          name: Build a container image
+          command: |
+            docker build -f Dockerfile.aarch64 -t wise2c/kubeadm-version-arm:$CIRCLE_BRANCH .
+            docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+            docker push wise2c/kubeadm-version-arm:$CIRCLE_BRANCH
+            docker run --rm --name=kubeadm-version wise2c/kubeadm-version-arm:$CIRCLE_BRANCH kubeadm config images list
+
+  build-tags-arm:
+    resource_class: arm.medium
+    machine: true
+    steps:
+      - checkout
+      - run:
+          name: Build a container image
+          command: |
+            docker build -f Dockerfile.aarch64 -t wise2c/kubeadm-version-arm:$CIRCLE_TAG .
+            docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+            docker push wise2c/kubeadm-version-arm:$CIRCLE_TAG
+            docker run --rm --name=kubeadm-version wise2c/kubeadm-version-arm:$CIRCLE_TAG kubeadm config images list
+
+workflows:
+  version: 2
+  build-for-branches:
+    jobs:
+      - build-branches-x86
+      - build-branches-arm
+  build-for-tags:
+    jobs:
+      - build-tags-x86:
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/
+      - build-tags-arm:
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/
