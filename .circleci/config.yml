@@ -7,8 +7,8 @@ jobs:
           name: Build an amd64 container image
           command: |
             docker build -f Dockerfile.amd64 -t wise2c/kubeadm-version:amd64-$CIRCLE_BRANCH .
-            # docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-            # docker push wise2c/kubeadm-version:amd64-$CIRCLE_BRANCH
+            docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+            docker push wise2c/kubeadm-version:amd64-$CIRCLE_BRANCH
             docker run --rm --name=kubeadm-version wise2c/kubeadm-version:amd64-$CIRCLE_BRANCH kubeadm config images list
 
   build-tags-amd64:
