@@ -82,6 +82,9 @@ workflows:
       - build-branches-amd64
       - build-branches-aarch64
       - build-branches-multi-arch
+          requires:
+            - build-branches-amd64
+            - build-branches-aarch64
   build-for-tags:
     jobs:
       - build-tags-amd64:
@@ -97,9 +100,11 @@ workflows:
             branches:
               ignore: /.*/
       - build-tags-multi-arch:
+          requires:
+            - build-tags-amd64
+            - build-tags-aarch64
           filters:
             tags:
               only: /^v.*/
             branches:
               ignore: /.*/
-
