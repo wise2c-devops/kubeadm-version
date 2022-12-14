@@ -11,7 +11,7 @@ jobs:
             # docker push wise2c/kubeadm-version:amd64-$CIRCLE_BRANCH
             docker run --rm --name=kubeadm-version wise2c/kubeadm-version:amd64-$CIRCLE_BRANCH kubeadm config images list
 
-  build-tags-x86:
+  build-tags-amd64:
     machine: true
     steps:
       - checkout
@@ -81,6 +81,7 @@ workflows:
     jobs:
       - build-branches-amd64
       - build-branches-aarch64
+      - build-branches-multi-arch
   build-for-tags:
     jobs:
       - build-tags-amd64:
@@ -95,3 +96,10 @@ workflows:
               only: /^v.*/
             branches:
               ignore: /.*/
+      - build-tags-multi-arch:
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/
+
