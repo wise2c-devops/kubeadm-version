@@ -1,69 +1,95 @@
 jobs:
-  build-branches-x86:
+  build-branches-amd64:
     machine: true
     steps:
       - checkout
       - run:
-          name: Build a container image
+          name: Build an amd64 container image
           command: |
-            docker build -f Dockerfile.amd64 -t wise2c/kubeadm-version:$CIRCLE_BRANCH .
-            docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-            docker push wise2c/kubeadm-version:$CIRCLE_BRANCH
-            docker run --rm --name=kubeadm-version wise2c/kubeadm-version:$CIRCLE_BRANCH kubeadm config images list
+            docker build -f Dockerfile.amd64 -t wise2c/kubeadm-version:amd64-$CIRCLE_BRANCH .
+            # docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+            # docker push wise2c/kubeadm-version:amd64-$CIRCLE_BRANCH
+            docker run --rm --name=kubeadm-version wise2c/kubeadm-version:amd64-$CIRCLE_BRANCH kubeadm config images list
 
   build-tags-x86:
     machine: true
     steps:
       - checkout
       - run:
-          name: Build a container image
+          name: Build an amd64 container image
           command: |
-            docker build -f Dockerfile.amd64 -t wise2c/kubeadm-version:$CIRCLE_TAG .
+            docker build -f Dockerfile.amd64 -t wise2c/kubeadm-version:amd64-$CIRCLE_TAG .
             docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-            docker push wise2c/kubeadm-version:$CIRCLE_TAG
+            docker push wise2c/kubeadm-version:amd64-$CIRCLE_TAG
+            docker run --rm --name=kubeadm-version wise2c/kubeadm-version:amd64-$CIRCLE_TAG kubeadm config images list
+
+  build-branches-aarch64:
+    machine: true
+    resource_class: arm.medium
+    steps:
+      - checkout
+      - run:
+          name: Build an aarch64 container image
+          command: |
+            docker build -f Dockerfile.aarch64 -t wise2c/kubeadm-version:aarch64-$CIRCLE_BRANCH .
+            docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+            docker push wise2c/kubeadm-version:aarch64-$CIRCLE_BRANCH
+            docker run --rm --name=kubeadm-version wise2c/kubeadm-version:aarch64-$CIRCLE_BRANCH kubeadm config images list
+
+  build-tags-aarch64:
+    resource_class: arm.medium
+    machine: true
+    steps:
+      - checkout
+      - run:
+          name: Build an aarch64 container image
+          command: |
+            docker build -f Dockerfile.aarch64 -t wise2c/kubeadm-version:aarch64-$CIRCLE_TAG .
+            docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+            docker push wise2c/kubeadm-version:aarch64-$CIRCLE_TAG
+            docker run --rm --name=kubeadm-version wise2c/kubeadm-version:aarch64-$CIRCLE_TAG kubeadm config images list
+
+  build-branches-multi-arch:
+    machine: true
+    steps:
+      - run:
+          name: Build a multi-arch container image
+          command: |
+            docker manifest create wise2c/kubeadm-version:$CIRCLE_BRANCH wise2c/kubeadm-version:amd64-$CIRCLE_BRANCH wise2c/kubeadm-version:aarch64-$CIRCLE_BRANCH
+            docker manifest annotate wise2c/kubeadm-version:$CIRCLE_BRANCH wise2c/kubeadm-version:amd64-$CIRCLE_BRANCH --os linux --arch amd64
+            docker manifest annotate wise2c/kubeadm-version:$CIRCLE_BRANCH wise2c/kubeadm-version:aarch64-$CIRCLE_BRANCH --os linux --arch arm64
+            docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+            docker manifest push wise2c/kubeadm-version:$CIRCLE_BRANCH
+            docker run --rm --name=kubeadm-version wise2c/kubeadm-version:$CIRCLE_BRANCH kubeadm config images list
+
+  build-tags-multi-arch:
+    machine: true
+    steps:
+      - run:
+          name: Build a multi-arch container image
+          command: |
+            docker manifest create wise2c/kubeadm-version:$CIRCLE_TAG wise2c/kubeadm-version:amd64-$CIRCLE_TAG wise2c/kubeadm-version:aarch64-$CIRCLE_TAG
+            docker manifest annotate wise2c/kubeadm-version:$CIRCLE_TAG wise2c/kubeadm-version:amd64-$CIRCLE_TAG --os linux --arch amd64
+            docker manifest annotate wise2c/kubeadm-version:$CIRCLE_TAG wise2c/kubeadm-version:aarch64-$CIRCLE_TAG --os linux --arch arm64
+            docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+            docker manifest push wise2c/kubeadm-version:$CIRCLE_TAG
             docker run --rm --name=kubeadm-version wise2c/kubeadm-version:$CIRCLE_TAG kubeadm config images list
-
-  build-branches-arm:
-    machine: true
-    resource_class: arm.medium
-    steps:
-      - checkout
-      - run:
-          name: Build a container image
-          command: |
-            docker build -f Dockerfile.aarch64 -t wise2c/kubeadm-version-arm:$CIRCLE_BRANCH .
-            docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-            docker push wise2c/kubeadm-version-arm:$CIRCLE_BRANCH
-            docker run --rm --name=kubeadm-version wise2c/kubeadm-version-arm:$CIRCLE_BRANCH kubeadm config images list
-
-  build-tags-arm:
-    resource_class: arm.medium
-    machine: true
-    steps:
-      - checkout
-      - run:
-          name: Build a container image
-          command: |
-            docker build -f Dockerfile.aarch64 -t wise2c/kubeadm-version-arm:$CIRCLE_TAG .
-            docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-            docker push wise2c/kubeadm-version-arm:$CIRCLE_TAG
-            docker run --rm --name=kubeadm-version wise2c/kubeadm-version-arm:$CIRCLE_TAG kubeadm config images list
 
 workflows:
   version: 2
   build-for-branches:
     jobs:
-      - build-branches-x86
-      - build-branches-arm
+      - build-branches-amd64
+      - build-branches-aarch64
   build-for-tags:
     jobs:
-      - build-tags-x86:
+      - build-tags-amd64:
           filters:
             tags:
               only: /^v.*/
             branches:
               ignore: /.*/
-      - build-tags-arm:
+      - build-tags-aarch64:
           filters:
             tags:
               only: /^v.*/
