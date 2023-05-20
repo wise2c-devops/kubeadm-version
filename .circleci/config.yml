@@ -21,7 +21,7 @@ jobs:
             docker build -f Dockerfile.amd64 -t wise2c/kubeadm-version:amd64-$CIRCLE_TAG .
             docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
             docker push wise2c/kubeadm-version:amd64-$CIRCLE_TAG
-            docker run --rm --name=kubeadm-version wise2c/kubeadm-version:amd64-$CIRCLE_TAG kubeadm config images list
+            docker run --rm --name=kubeadm-version wise2c/kubeadm-version:amd64-$CIRCLE_TAG kubeadm config images list --kubernetes-version $CIRCLE_TAG
 
   build-branches-aarch64:
     machine: true
@@ -47,7 +47,7 @@ jobs:
             docker build -f Dockerfile.aarch64 -t wise2c/kubeadm-version:aarch64-$CIRCLE_TAG .
             docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
             docker push wise2c/kubeadm-version:aarch64-$CIRCLE_TAG
-            docker run --rm --name=kubeadm-version wise2c/kubeadm-version:aarch64-$CIRCLE_TAG kubeadm config images list
+            docker run --rm --name=kubeadm-version wise2c/kubeadm-version:aarch64-$CIRCLE_TAG kubeadm config images list --kubernetes-version $CIRCLE_TAG
 
   build-branches-multi-arch:
     machine: true
@@ -73,7 +73,7 @@ jobs:
             docker manifest annotate wise2c/kubeadm-version:$CIRCLE_TAG wise2c/kubeadm-version:aarch64-$CIRCLE_TAG --os linux --arch arm64
             docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
             docker manifest push wise2c/kubeadm-version:$CIRCLE_TAG
-            docker run --rm --name=kubeadm-version wise2c/kubeadm-version:$CIRCLE_TAG kubeadm config images list
+            docker run --rm --name=kubeadm-version wise2c/kubeadm-version:$CIRCLE_TAG kubeadm config images list --kubernetes-version $CIRCLE_TAG
 
 workflows:
   version: 2
