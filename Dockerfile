@@ -1,3 +1,3 @@
 FROM almalinux:9
-COPY kubernetes-aarch64.repo /etc/yum.repos.d
+COPY kubernetes.repo /etc/yum.repos.d
 RUN yum -y install kubeadm-1.26.10 kubectl-1.26.10 kubelet-1.26.10

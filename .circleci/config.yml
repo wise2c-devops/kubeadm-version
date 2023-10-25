@@ -6,7 +6,7 @@ jobs:
       - run:
           name: Build an amd64 container image
           command: |
-            docker build -f Dockerfile.amd64 -t wise2c/kubeadm-version:amd64-$CIRCLE_BRANCH .
+            docker build -t wise2c/kubeadm-version:amd64-$CIRCLE_BRANCH .
             docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
             docker push wise2c/kubeadm-version:amd64-$CIRCLE_BRANCH
             docker run --rm --name=kubeadm-version wise2c/kubeadm-version:amd64-$CIRCLE_BRANCH kubeadm config images list
@@ -18,7 +18,7 @@ jobs:
       - run:
           name: Build an amd64 container image
           command: |
-            docker build -f Dockerfile.amd64 -t wise2c/kubeadm-version:amd64-$CIRCLE_TAG .
+            docker build -t wise2c/kubeadm-version:amd64-$CIRCLE_TAG .
             docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
             docker push wise2c/kubeadm-version:amd64-$CIRCLE_TAG
             docker run --rm --name=kubeadm-version wise2c/kubeadm-version:amd64-$CIRCLE_TAG kubeadm config images list --kubernetes-version $CIRCLE_TAG
@@ -31,7 +31,7 @@ jobs:
       - run:
           name: Build an aarch64 container image
           command: |
-            docker build -f Dockerfile.aarch64 -t wise2c/kubeadm-version:aarch64-$CIRCLE_BRANCH .
+            docker build -t wise2c/kubeadm-version:aarch64-$CIRCLE_BRANCH .
             docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
             docker push wise2c/kubeadm-version:aarch64-$CIRCLE_BRANCH
             docker run --rm --name=kubeadm-version wise2c/kubeadm-version:aarch64-$CIRCLE_BRANCH kubeadm config images list
@@ -44,7 +44,7 @@ jobs:
       - run:
           name: Build an aarch64 container image
           command: |
-            docker build -f Dockerfile.aarch64 -t wise2c/kubeadm-version:aarch64-$CIRCLE_TAG .
+            docker build -t wise2c/kubeadm-version:aarch64-$CIRCLE_TAG .
             docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
             docker push wise2c/kubeadm-version:aarch64-$CIRCLE_TAG
             docker run --rm --name=kubeadm-version wise2c/kubeadm-version:aarch64-$CIRCLE_TAG kubeadm config images list --kubernetes-version $CIRCLE_TAG
