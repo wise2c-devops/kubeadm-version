@@ -7,7 +7,7 @@ jobs:
       - run:
           name: Build an aarch64 container image
           command: |
-            docker login -u $AlibabaDOCKER_USERNAME -p $AlibabaDOCKER_PASSWORD
+            docker login -u $AlibabaDOCKER_USERNAME -p $AlibabaDOCKER_PASSWORD registry.cn-hangzhou.aliyuncs.com
             ${PWD}/pull-images.sh
 
 workflows:
